@@ -61,6 +61,27 @@ end
 # end
 
 require 'jeweler'
+
+class Jeweler
+  module Commands
+    class ReleaseGemspec
+      def run
+        unless clean_staging_area?
+          system "git status"
+          raise "Unclean staging area! Be sure to commit or .gitignore everything first. See `git status` above."
+        end
+
+        repo.checkout('parametrize')
+
+        regenerate_gemspec!
+        commit_gemspec! if gemspec_changed?
+
+        output.puts "Pushing master to origin"
+        repo.push
+      end
+    end
+  end
+end
 jt = Jeweler::Tasks.new do |gem|
   gem.name = "vitalish-factory_girl"
   gem.summary = "factory_girl provides a framework and DSL for defining and using model instance factories."
