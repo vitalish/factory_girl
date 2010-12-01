@@ -76,8 +76,32 @@ class Jeweler
         regenerate_gemspec!
         commit_gemspec! if gemspec_changed?
 
-        output.puts "Pushing master to origin"
+        output.puts "Pushing parametrize to origin"
         repo.push
+      end
+    end
+  end
+end
+
+class Jeweler
+  module Commands
+    class ReleaseToGit
+      def run
+        unless clean_staging_area?
+          system "git status"
+          raise "Unclean staging area! Be sure to commit or .gitignore everything first. See `git status` above."
+        end
+        output.puts "Checkouting"
+        repo.checkout('parametrize')
+        repo.push
+        
+        if release_not_tagged?
+          output.puts "Tagging #{release_tag}"
+          repo.add_tag(release_tag)
+
+          output.puts "Pushing #{release_tag} to origin"
+          repo.push('origin', release_tag)
+        end
       end
     end
   end
