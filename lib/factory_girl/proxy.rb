@@ -13,6 +13,11 @@ class Factory
 
     def set(attribute, value)
     end
+    
+    def set_param(attribute, value)
+      @params ||= {}
+      @params[attribute] = value
+    end
 
     def associate(name, factory, attributes)
     end
@@ -26,7 +31,16 @@ class Factory
     def run_callbacks(name)
       if @callbacks && @callbacks[name]
         @callbacks[name].each do |block|
-          block.arity.zero? ? block.call : block.call(@instance)
+          case block.arity
+            when 0
+              block.call
+            when 1
+              block.call(@instance)
+            when 2
+              block.call(@instance,@params)
+            when 3
+              block.call(@instance,@params,attrib)
+            end
         end
       end
     end

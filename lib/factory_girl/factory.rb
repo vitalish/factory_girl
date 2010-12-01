@@ -71,6 +71,7 @@ class Factory
     @factory_name = factory_name_for(name)
     @options      = options      
     @attributes   = []
+    @params       = []
   end
   
   def inherit_from(parent) #:nodoc:
@@ -186,6 +187,10 @@ class Factory
   def sequence (name, &block)
     s = Sequence.new(&block)
     add_attribute(name) { s.next }
+  end
+  
+  def param(name)
+    @params << name
   end
   
   def after_build(&block)
@@ -306,6 +311,11 @@ class Factory
   def run (proxy_class, overrides) #:nodoc:
     proxy = proxy_class.new(build_class)
     overrides = symbolize_keys(overrides)
+    overrides = overrides.delete_if do |attr, val|
+      attr_is_param = @params.include?(attr)
+      proxy.set_param(attr,val) if attr_is_param
+      attr_is_param
+    end
     overrides.each {|attr, val| proxy.set(attr, val) }
     passed_keys = overrides.keys.collect {|k| Factory.aliases_for(k) }.flatten
     @attributes.each do |attribute|
