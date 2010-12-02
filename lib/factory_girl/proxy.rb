@@ -28,7 +28,7 @@ class Factory
       @callbacks[name] << block
     end
 
-    def run_callbacks(name)
+    def run_callbacks(name, attrib = nil)
       if @callbacks && @callbacks[name]
         @callbacks[name].each do |block|
           case block.arity
