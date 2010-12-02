@@ -5,6 +5,7 @@ class Factory
     attr_reader :callbacks
 
     def initialize(klass)
+      @params = {}
     end
 
     def get(attribute)
@@ -15,7 +16,6 @@ class Factory
     end
     
     def set_param(attribute, value)
-      @params ||= {}
       @params[attribute] = value
     end
 

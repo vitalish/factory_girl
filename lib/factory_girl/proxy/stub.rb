@@ -4,6 +4,7 @@ class Factory
       @@next_id = 1000
 
       def initialize(klass)
+        super
         @instance = klass.new
         @instance.id = next_id
         @instance.instance_eval do
