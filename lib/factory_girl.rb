@@ -27,9 +27,11 @@ if defined? Rails.configuration
       File.join(RAILS_ROOT, 'test', 'factories'),
       File.join(RAILS_ROOT, 'spec', 'factories')
     ]
+        
+    Dir["#{RAILS_ROOT}/vendor/plugins/*/spec/factories"].each{|d| Factory.definition_file_paths << d}
+    
     Factory.find_definitions
   end
 else
   Factory.find_definitions
 end
-
