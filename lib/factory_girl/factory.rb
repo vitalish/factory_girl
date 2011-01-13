@@ -23,6 +23,7 @@ class Factory
 
   attr_reader :factory_name #:nodoc:
   attr_reader :attributes #:nodoc:
+  attr_reader :params #:nodoc:
 
   # Defines a new factory that can be used by the build strategies (create and
   # build) to build new objects.
@@ -79,6 +80,11 @@ class Factory
     parent.attributes.each do |attribute|
       unless attribute_defined?(attribute.name)
         @attributes << attribute.clone
+      end
+    end
+    parent.params.each do |param|
+      unless @params.include?(param) 
+        @params << param
       end
     end
   end
